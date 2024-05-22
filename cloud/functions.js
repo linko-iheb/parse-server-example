@@ -12,3 +12,23 @@ Parse.Cloud.define('asyncFunction', async req => {
 Parse.Cloud.beforeSave('Test', () => {
   throw new Parse.Error(9001, 'Saving test objects is not available.');
 });
+
+Parse.Cloud.define('testRedisConnection', async (req) => {
+  try {
+    // Ping the Redis server
+    const result = await redisCache.client.ping();
+
+    // If the ping was successful, the result should be 'PONG'
+    if (result === 'PONG') {
+      console.log('Successfully connected to Redis cache.');
+      return 'Successfully connected to Redis cache.';
+    } else {
+      console.error('Failed to connect to Redis cache.');
+      return 'Failed to connect to Redis cache.';
+    }
+  } catch (error) {
+    console.error('Error occurred during Redis connection test:', error);
+    throw new Parse.Error(9002, 'Error occurred during Redis connection test.');
+  }
+});
+
