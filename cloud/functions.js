@@ -1,6 +1,6 @@
 Parse.Cloud.define('hello', req => {
   req.log.info(req);
-  return 'Hi';
+  return 'Hi , you are running parse server now , congrats !';
 });
 
 Parse.Cloud.define('asyncFunction', async req => {
