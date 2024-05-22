@@ -97,9 +97,14 @@ app.get('/testRedis', async (req, res) => {
   }
 });
 
-// Route for setting a test key-value pair in Redis
 app.get('/setTestKey', async (req, res) => {
   try {
+    if (!redisCache.client.connected) {
+      console.error('Redis client is not connected.');
+      return res.status(500).send('Redis client is not connected.');
+    }
+
+
     // Set a test key-value pair in Redis
     await new Promise((resolve, reject) => {
       redisCache.client.set('testKey', 'testValue', (error) => {
