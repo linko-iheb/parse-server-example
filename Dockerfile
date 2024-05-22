@@ -13,7 +13,6 @@ ENV PARSE_MOUNT=/parse
 
 # Add Redis cache adapter configuration
 ENV REDIS_URL=redis://redis:6379
-
 EXPOSE 1337
 
 CMD [ "npm", "start" ]
