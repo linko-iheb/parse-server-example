@@ -1,5 +1,5 @@
 import express from 'express';
-import { ParseServer, RedisCacheAdapter } from 'parse-server';
+import { ParseServer } from 'parse-server';
 import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
@@ -15,9 +15,8 @@ const config = {
   appId: process.env.APP_ID,
   masterKey: process.env.MASTER_KEY, // Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse', // Don't forget to change to https if needed
-  masterKeyIps:["::/0"] , // Accept all IPv6 addresses
+  masterKeyIps: ['::/0'], // Accept all IPv6 addresses
   apiVersion: process.env.PARSE_SERVER_API_VERSION || '7', // Set API version to 7
-  //cacheAdapter: redisCache,
   liveQuery: {
     classNames: ['Posts', 'Comments'], // List of classes to support for query subscriptions
   },

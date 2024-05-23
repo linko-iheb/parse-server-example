@@ -1,8 +1,5 @@
 FROM node:latest
 
-# Create a directory for Parse
-RUN mkdir parse
-
 # Set the working directory to /parse
 WORKDIR /parse
 
@@ -20,7 +17,9 @@ ENV APP_ID=myAppId
 ENV MASTER_KEY=MASTER_KEY
 ENV DATABASE_URI=mongodb://mongodb:27017
 ENV PARSE_MOUNT=/parse
-ENV MASTER_KEY_IPS=::/0
+ENV MASTER_KEY_IPS="::/0"
+ENV CLOUD_CODE_MAIN=/parse/cloud/main.js
+ENV PARSE_SERVER_API_VERSION=7
 
 # Expose port 1337
 EXPOSE 1337
