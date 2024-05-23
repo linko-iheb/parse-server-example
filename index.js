@@ -8,46 +8,16 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Redis configuration
-const redisUrl = process.env.REDIS_URL || 'redis://redis:6379'; // Use 'redis' hostname for Docker container
-const redisCache = new RedisCacheAdapter({ url: redisUrl });
-
-// Event listener functions
-function onRedisConnect() {
-  console.log('Connected to Redis cache.');
-}
-
-function onRedisEnd() {
-  console.log('Connection to Redis cache ended.');
-}
-
-function onRedisError(error) {
-  console.error('Error connecting to Redis:', error);
-}
-
-function onRedisReady() {
-  console.log('Redis client is ready.');
-}
-
-function onRedisReconnecting() {
-  console.log('Redis client is reconnecting.');
-}
-
-// Attach listeners for Redis events
-redisCache.client.on('connect', onRedisConnect);
-redisCache.client.on('end', onRedisEnd);
-redisCache.client.on('error', onRedisError);
-redisCache.client.on('ready', onRedisReady);
-redisCache.client.on('reconnecting', onRedisReconnecting);
-
 // Parse Server configuration
 const config = {
   databaseURI: process.env.DATABASE_URI || 'mongodb://localhost:27017/dev',
   cloud: process.env.CLOUD_CODE_MAIN || path.join(__dirname, '/cloud/main.js'),
   appId: process.env.APP_ID,
-  masterKey: process.env.MASTER_KEY || '', // Add your master key here. Keep it secret!
+  masterKey: process.env.MASTER_KEY, // Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse', // Don't forget to change to https if needed
-  cacheAdapter: redisCache,
+  masterKeyIps:["::/0"] , // Accept all IPv6 addresses
+  apiVersion: process.env.PARSE_SERVER_API_VERSION || '7', // Set API version to 7
+  //cacheAdapter: redisCache,
   liveQuery: {
     classNames: ['Posts', 'Comments'], // List of classes to support for query subscriptions
   },
@@ -94,33 +64,6 @@ app.get('/testRedis', async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send(`Error occurred during Cloud Function call: ${error.message}`);
-  }
-});
-
-app.get('/setTestKey', async (req, res) => {
-  try {
-    if (!redisCache.client.connected) {
-      console.error('Redis client is not connected.');
-      return res.status(500).send('Redis client is not connected.');
-    }
-
-
-    // Set a test key-value pair in Redis
-    await new Promise((resolve, reject) => {
-      redisCache.client.set('testKey', 'testValue', (error) => {
-        if (error) {
-          console.error('Error setting test key-value pair in Redis:', error);
-          reject(error);
-        } else {
-          console.log('Test key-value pair set in Redis.');
-          resolve();
-        }
-      });
-    });
-    res.status(200).send('Test key-value pair set in Redis.');
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Error occurred during setting test key-value pair in Redis.');
   }
 });
 
