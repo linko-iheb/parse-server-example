@@ -1,8 +1,14 @@
+import os from 'os';
+
 Parse.Cloud.define('hello', req => {
-  const serverName = Parse.serverURL;
-  req.log.info(`[${serverName}] ${req}`);
-  return 'Hi, you are running Parse Server now, congrats!';
+  const serverName = os.hostname();
+  const logMessage = `Hi from Container (${serverName}), you are running Parse Server now, congrats!`;
+  req.log.info(logMessage);
+  return logMessage;
 });
+
+
+
 
 Parse.Cloud.define('asyncFunction', async req => {
   await new Promise(resolve => setTimeout(resolve, 1000));
